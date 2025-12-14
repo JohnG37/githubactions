@@ -60,4 +60,4 @@ jobs:
 
       # Disable host key checking & Run playbook
       - name: Run Ansible Playbook
-        run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i hosts.ini deploy.yml
+        run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i hosts.ini playbook.yml
