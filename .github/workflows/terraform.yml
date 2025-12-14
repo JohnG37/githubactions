@@ -28,7 +28,36 @@ jobs:
       # Terraform Init
       - name: Terraform Init
         run: terraform init
-
+     
       # Terraform Apply
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve       
+     
+      # Capture EC2 Public IP
+      - name: Get Instance IP
+        run: |
+        IP=$(terraform output -raw instance_public_ip)
+        echo "IP=$IP" >> $GITHUB_ENV
+        echo "EC2 Public IP is $IP"
+
+      # Add SSH Private Key (stored in GitHub Secrets)
+      - name: Add SSH Key
+        run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+        chmod 600 key.pem
+
+      # Install Ansible
+      - name: Install Ansible
+        run: sudo apt-get update && sudo apt-get install -y ansible
+
+      # Generate Ansible Inventory dynamically
+      - name: Create hosts.ini
+        run: |
+        echo "[web]" > hosts.ini
+        echo "$IP ansible_user=ubuntu ansible_ssh_private_key_file=./key.pem" >> hosts.ini
+        echo "---- hosts.ini ----"
+        cat hosts.ini
+
+      # Disable host key checking & Run playbook
+      - name: Run Ansible Playbook
+        run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i hosts.ini deploy.yml
