@@ -53,7 +53,7 @@ resource "aws_security_group" "demo_sg" {
 # EC2 Instance
 ##############################
 resource "aws_instance" "demo_ec2" {
-  ami                    = "ami-0ecb62995f68bb549" # Ubuntu 22.04 LTS (us-east-1)
+  ami                    = "ami-0c398cb65a93047f2" # Ubuntu 22.04 LTS (us-east-1)
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.demo_sg.id]
 
